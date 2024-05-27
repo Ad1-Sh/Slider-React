@@ -1,15 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
-
 const SliderContainer = styled.div`
   color: #213547;
   width: 100%;
   position: relative;
-  margin: 0 auto;
-  border: 1px solid #ccc;
+  margin: 0 0.25rem;
+  
   border-radius: 10px;
-  background-color: #f9f9f9;
+
   text-align: center;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   -webkit-overflow-scrolling: touch;
@@ -22,7 +21,7 @@ const SliderHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
   user-select: none;
 `;
 
@@ -35,14 +34,14 @@ const InfoIcon = styled.span`
 const SliderValueDisplay = styled.div`
   font-size: 1.5em;
   font-weight: bold;
-  padding: 10px;
+  padding: 0.5rem;
   user-select: none;
 `;
 
 const SliderValues = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 0.5rem;
   user-select: none;
 `;
 
@@ -54,7 +53,6 @@ const CustomSlider = styled.div`
   position: relative;
   cursor: pointer;
   margin: 0 auto;
-  max-width: 300px;
 
   &::before {
     content: '';
@@ -70,7 +68,7 @@ const CustomSlider = styled.div`
     }};
     background-color: #39b3bd;
     border-radius: 5px;
-    transition: width 0.2s ease;
+    transition: width 0.1s ease;
   }
 `;
 
@@ -83,7 +81,7 @@ const SliderThumb = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
   cursor: pointer;
-  transition: left 0.2s ease;
+  transition: left 0.1s ease;
   overflow-y: visible;
 `;
 
@@ -92,10 +90,8 @@ const SliderToggle = styled.div`
 display: flex;
 justify-content: center;
 position: relative;
-border: 1px solid #ccc;
-padding: 20px;
-max-width: 300px; 
-margin: 0 auto;
+padding: 20px; 
+
 
 &::before {
   content: '';
@@ -107,10 +103,10 @@ margin: 0 auto;
     const filledWidth = ((value - minValue) / (maxValue - minValue)) * 100;
     return filledWidth > 100 ? 100 : filledWidth < 0 ? 0 : filledWidth + '%';
   }};
-  transition: width 0.2s ease;
+  transition: width 0.1s ease;
 `
 
-const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, headerText, headerIcon, leftBoundary = 0.05, rightBoundary = 0.95 }) => {
+const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, headerText, leftBoundary = 0.05, rightBoundary = 0.95 }) => {
   const [value, setValue] = useState(initialValue);
   const [touchStartX, setTouchStartX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -219,10 +215,10 @@ const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, header
     <SliderContainer>
       <SliderHeader>
         <span>{headerText}</span>
-        <InfoIcon title="Insert Icon">{headerIcon}</InfoIcon>
-      </SliderHeader>
         <SliderValueDisplay>{'₹' + value.toLocaleString()}
         </SliderValueDisplay>
+      </SliderHeader>
+        
         <SliderToggle 
 
         ref={sliderRef}
