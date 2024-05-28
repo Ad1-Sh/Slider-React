@@ -2,13 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 const SliderContainer = styled.div`
-  color: #213547;
+  color: #000000;
   width: 100%;
   position: relative;
-  margin: 0 0.25rem;
-  
+  margin: 0rem 0.5rem 0rem 0rem;
   border-radius: 10px;
-
   text-align: center;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   -webkit-overflow-scrolling: touch;
@@ -31,14 +29,14 @@ const InfoIcon = styled.span`
   user-select: none;
 `;
 
-const SliderValueDisplay = styled.div`
+const SelectedValueDisplay = styled.div`
   font-size: 1.5em;
   font-weight: bold;
   padding: 0.5rem;
   user-select: none;
 `;
 
-const SliderValues = styled.div`
+const MinMaxDisplay = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 0.5rem;
@@ -90,8 +88,8 @@ const SliderToggle = styled.div`
 display: flex;
 justify-content: center;
 position: relative;
-padding: 20px; 
-
+padding: 20px 2px 20px 2px;
+margin: 20px;
 
 &::before {
   content: '';
@@ -106,7 +104,7 @@ padding: 20px;
   transition: width 0.1s ease;
 `
 
-const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, headerText, leftBoundary = 0.05, rightBoundary = 0.95 }) => {
+const StepSlider = ({ initialValue, minValue, maxValue, stepValue, headerText,showMinMaxDisplay = true, showSelectedValueDisplay = true, showHelpIcon = true, showAsAmount = true}) => {
   const [value, setValue] = useState(initialValue);
   const [touchStartX, setTouchStartX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -117,30 +115,18 @@ const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, header
     if ((!isDragging && !isClick) || !sliderRef.current) return;
     const sliderWidth = sliderRef.current.offsetWidth;
     const newPosition = (clientX - sliderRef.current.getBoundingClientRect().left) / sliderWidth;
-    // const steps = Math.round((maxValue - minValue) / stepValue);
     const steps = Math.max(1, Math.round((maxValue - minValue) / stepValue));  // Ensures at least one step
 
     const stepWidth = 1 / steps;
     let closestStep;
     
-    if (isClick) {
-      if (newPosition < leftBoundary) {
-        closestStep = 0;
-      } else if (newPosition > rightBoundary) {
-        closestStep = steps;
-      } else {
-        closestStep = Math.round(newPosition / stepWidth);
-      }
-    } else {
-      closestStep = Math.round(newPosition / stepWidth);
-    }
-    const newValue = isClick
-      ? (newPosition < leftBoundary ? minValue : newPosition > rightBoundary ? maxValue : closestStep * stepValue + minValue)
-      : Math.min(maxValue, Math.max(minValue, closestStep * stepValue + minValue));
+    closestStep = Math.round(newPosition / stepWidth);
+    
+    const newValue = Math.min(maxValue, Math.max(minValue, closestStep * stepValue + minValue));
       setValue(Math.min(maxValue, newValue));
   };
   
-  //update
+
   const handleTouchStartToggle = (event) => {
     handleStartDrag(event.touches[0].clientX);
   };
@@ -155,8 +141,6 @@ const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, header
   const handleTouchEndToggle = () => {
     handleEndDrag();
   };
-
-  //updateend
   
   const handleStartDrag = (clientX) => {
     setIsDragging(true);
@@ -214,13 +198,23 @@ const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, header
   return (
     <SliderContainer>
       <SliderHeader>
-        <span>{headerText}</span>
-        <SliderValueDisplay>{'₹' + value.toLocaleString()}
-        </SliderValueDisplay>
+        <span>{headerText}
+        {showHelpIcon && <InfoIcon title="Insert Icon">{/* help icon here */}</InfoIcon>}
+        </span>
+        {showSelectedValueDisplay && (
+        <SelectedValueDisplay>
+          {showAsAmount ? (
+            <>
+            {/* Rupee Symbol */}
+            {value.toLocaleString()}
+            </>
+          ):(
+            value.toLocaleString()
+          )}
+      </SelectedValueDisplay>
+        )}
       </SliderHeader>
-        
         <SliderToggle 
-
         ref={sliderRef}
         onMouseDown={(event) => handleStartDrag(event.clientX)}
         onTouchStart={handleTouchStartToggle}
@@ -230,7 +224,6 @@ const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, header
         minValue={minValue}
         maxValue={maxValue}
         onClick={handleSliderClick}
-
         >
       <CustomSlider
         ref={sliderRef}
@@ -246,11 +239,21 @@ const StepSlider = ({ initialValue, minValue, maxValue, stepValue, marks, header
         />
       </CustomSlider>
       </SliderToggle>
-      <SliderValues>
-          <span>{marks[0].label}</span>
-          <span>{marks[marks.length - 1].label}</span>
-        </SliderValues>
-
+      {showMinMaxDisplay && (
+  <MinMaxDisplay>
+     {showAsAmount ? (
+            <>
+              <span>{ /* Rupee Symbol */}{minValue}</span>
+              <span>{ /* Rupee Symbol */}{maxValue}</span>
+            </>
+          ):(
+            <>
+            <span>{minValue}</span>
+            <span>{maxValue}</span>
+            </>
+          )}
+  </MinMaxDisplay>
+      )}
     </SliderContainer>
   );
 };
