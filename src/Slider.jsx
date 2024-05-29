@@ -1,15 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
+/*stepValue: Value for each step, 
+             Divide number of steps with (max-min value) to get stepValue for each step
+             Try to keep it so that (max-min) is divisible by stepValue
+             Don't pass 0 as stepValue, pass 1 for no steps */
 
+//minValue: Minimum value in the slider
 
+//maxvalue: Maximum value in the slider
 
 const SliderContainer = styled.div`
   color: #000000;
   width: 100%;
   position: relative;
   margin: 0rem 0.5rem 0rem 0rem;
-  border-radius: 10px;
+  border-radius: 0.625rem;
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -17,13 +23,14 @@ const SliderContainer = styled.div`
 `;
 
 const CustomSlider = styled.div`
-  width: calc(100% - 40px);
-  height: 10px;
+  width: calc(100% - 2.5rem);
+  height: 0.25rem;
+  border-radius: 0.25rem;
+  box-shadow: none;
+  margin: 0.625rem 0rem;
   background-color: #ddd;
-  border-radius: 5px;
   position: relative;
   cursor: pointer;
-  margin: 0 auto;
 
   &::before {
     content: '';
@@ -38,7 +45,7 @@ const CustomSlider = styled.div`
       return filledWidth + '%';
     }};
     background-color: #f2b100;
-    border-radius: 5px;
+    border-radius: 0.313rem;
     transition: width 0.1s ease;
   }
 `;
@@ -61,8 +68,8 @@ const SliderToggle = styled.div`
 display: flex;
 justify-content: center;
 position: relative;
-padding: 20px 2px 20px 2px;
-margin: 20px;
+padding: 1.25rem 0.125rem 1.25rem 0.125rem;
+margin: 1.25rem;
 
 &::before {
   content: '';
@@ -75,7 +82,8 @@ margin: 20px;
     return filledWidth > 100 ? 100 : filledWidth < 0 ? 0 : filledWidth + '%';
   }};
   transition: width 0.1s ease;
-`
+}
+`;
 
 const Slider = ({ minValue, maxValue, stepValue}) => {
   const [value, setValue] = useState(minValue);
@@ -88,7 +96,6 @@ const Slider = ({ minValue, maxValue, stepValue}) => {
     if ((!isDragging && !isClick) || !sliderRef.current) return;
     const sliderWidth = sliderRef.current.offsetWidth;
     const newPosition = (clientX - sliderRef.current.getBoundingClientRect().left) / sliderWidth;
-    // const steps = Math.max(1, Math.round((maxValue - minValue) / stepValue));  // Ensures at least one step
     const steps = Math.ceil((maxValue - minValue) / stepValue);
 
     const stepWidth = 1 / steps;
